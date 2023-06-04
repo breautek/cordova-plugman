@@ -17,13 +17,12 @@
     under the License.
 */
 const nopt = require('nopt');
-const rewire = require('rewire');
-const main = rewire('../main');
+const NoptInterface = require('../src/NoptInterface');
 
 describe('nopt interface check', () => {
     it('parameters without assignment operator should be assigned', () => {
-        const knownOptions = main.__get__('known_opts');
-        const shortHands = main.__get__('shortHands');
+        const knownOptions = NoptInterface.getKnownOpts();
+        const shortHands = NoptInterface.getShorthands();
         const cli_opts = nopt(knownOptions, shortHands, ['plugman', 'create', '--name', 'MyName', '--plugin_id', 'MyId', '--plugin_version', '1.0.0']);
 
         expect(cli_opts.name).toEqual('MyName');

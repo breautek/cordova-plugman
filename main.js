@@ -21,11 +21,8 @@
 
 // Register custom fail handler for uncaughtException event
 process.on('uncaughtException', fail);
+process.on('unhandledRejection', fail);
 
-// On unhandled promise rejection, log it to STDERR and exit with code 1
-require('loud-rejection/register');
-
-const url = require('url');
 const path = require('path');
 
 const nopt = require('nopt');
@@ -34,33 +31,9 @@ const pkg = require('./package');
 const help = require('./src/help');
 const commands = require('./src/commands');
 const plugman = require('./plugman');
-const { cordova_platforms } = require('cordova-lib');
+const NoptInterface = require('./src/NoptInterface');
 
-const knownPlatforms = Object.keys(cordova_platforms);
-
-const known_opts = {
-    platform: knownPlatforms,
-    platform_name: knownPlatforms,
-    project: path,
-    plugin: [String, path, url, Array],
-    version: Boolean,
-    help: Boolean,
-    debug: Boolean,
-    silent: Boolean,
-    plugins: path,
-    link: Boolean,
-    variable: Array,
-    www: path,
-    searchpath: [path, Array],
-    save: Boolean,
-    name: String,
-    plugin_id: String,
-    plugin_version: String,
-    plugins_dir: String
-};
-const shortHands = { var: ['--variable'], v: ['--version'], h: ['--help'] };
-
-const cli_opts = nopt(known_opts, shortHands);
+const cli_opts = nopt(NoptInterface.getKnownOpts(), NoptInterface.getShorthands());
 
 const cmd = cli_opts.argv.remain.shift();
 
